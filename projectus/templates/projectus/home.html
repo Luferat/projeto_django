@@ -2,6 +2,17 @@
 
 {% block content %}
 
-Minha home
+<h2>Posts Recentes</h2>
+
+{% for post in posts %}
+
+<div>
+    <img src="{{ post.thumbnail }}" alt="{{ post.title }}">
+    <h4><a href="{{ post.id }}">{{ post.title }}</a></h4>
+    <p>{{ post.summary }}</p>
+</div>
+<hr>
+
+{% endfor %}
 
 {% endblock %}
