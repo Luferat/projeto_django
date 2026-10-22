@@ -2,17 +2,27 @@
 
 {% block content %}
 
-<h2>Posts Recentes</h2>
+<section>
 
-{% for post in posts %}
+    <h2>Posts Recentes</h2>
 
-<div>
-    <img src="{{ post.thumbnail }}" alt="{{ post.title }}">
-    <h4><a href="{{ post.id }}">{{ post.title }}</a></h4>
-    <p>{{ post.summary }}</p>
-</div>
-<hr>
+    <p>{{ total }} posts.</p>
 
-{% endfor %}
+    {% for post in posts %}
+
+    <div>
+        <img src="{{ post.thumbnail }}" alt="{{ post.title }}" width="150">
+        <h4><a href="{% url 'post_view' id=post.id  %}">{{ post.title }}</a></h4>
+        <p>{{ post.summary }}</p>
+    </div>
+    <hr>
+
+    {% empty %}
+
+    <p>Não achei nada.</p>
+
+    {% endfor %}
+
+</section>
 
 {% endblock %}
