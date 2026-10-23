@@ -1,3 +1,5 @@
+# core\settings.py
+
 """
 Django settings for core project.
 
@@ -31,13 +33,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'projectus',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'projectus'
 ]
 
 MIDDLEWARE = [
@@ -74,6 +76,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+'''
 # Configurações para MySQL
 DATABASES = {
     'default': {
@@ -90,14 +93,14 @@ DATABASES = {
 }
 
 '''
-Configurações para SQLite
+# Configurações para SQLite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-'''
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
