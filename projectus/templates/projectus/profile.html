@@ -1,0 +1,33 @@
+{% extends 'projectus/_base.html' %}
+
+{% block content %}
+
+<section>
+
+    <h2>Meu perfil</h2>
+
+    <p>Olá, {{ request.user.username }}! Edite seus dados abaixo.</p>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <p>
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+        </p>
+        {% endfor %}
+        {% if form.non_field_errors %}
+        <p>
+            {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+        </p>
+        {% endif %}
+        <p><button type="submit">Salvar alterações</button></p>
+    </form>
+
+</section>
+
+{% endblock %}

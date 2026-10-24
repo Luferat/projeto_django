@@ -14,6 +14,11 @@
         <p><button type="submit">Entrar</button></p>
     </form>
 
+    <ul>
+        <li>Não possui uma conta? <a href="{% url 'register' %}">Cadastre-se</a></li>
+        <li>Esqueceu sua senha? <a href="{% url 'password_reset' %}">Definir nova senha</a></li>
+    </ul>
+
 </section>
 
 {% endblock %}

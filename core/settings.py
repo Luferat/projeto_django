@@ -31,13 +31,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'projectus',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'projectus'
+    'django.contrib.sites'
 ]
 
 MIDDLEWARE = [
@@ -141,7 +142,16 @@ STATIC_URL = 'static/'
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS': {
+            'host': 'smtp.gmail.com',
+            'port': 587,
+            'username': 'andre@luferat.net',
+            'password': 'vyso uvnf sxbh jzvl',
+            'use_tls': True,
+            'use_ssl': False,
+            'timeout': 20,
+        },
     },
 }
 
@@ -152,3 +162,4 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # Dados de ProjectUs
 
 SITENAME = 'ProjectUs'
+SITE_ID = 1
