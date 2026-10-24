@@ -26,6 +26,10 @@
         </p>
         {% endif %}
         <p><button type="submit">Salvar alterações</button></p>
+
+        {% if user.is_authenticated %}
+        <p><a href="{% url 'password_change' %}">Alterar minha senha</a></p>
+        {% endif %}
     </form>
 
 </section>
