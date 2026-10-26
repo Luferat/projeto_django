@@ -1,13 +1,10 @@
 # projectus\views\password_reset.py
 
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm
 from django.shortcuts import render, redirect
-from django import forms
-
-
-class PasswordResetForm(forms.Form):
-    username = forms.CharField(label='Nome de usuário')
+from projectus.forms import PasswordResetForm
 
 
 def password_reset(request):
@@ -25,6 +22,7 @@ def password_reset(request):
                     'Usuário não encontrado.'
                 )
             else:
+                messages.success("E-mail enviado com sucesso!")
                 return redirect(
                     'password_reset_confirm',
                     username=user.username
@@ -51,6 +49,7 @@ def password_reset_confirm(request, username):
 
         if form.is_valid():
             form.save()
+            messages.success("Senha atualizada!")
             return redirect('login')
     else:
         form = SetPasswordForm(user)

@@ -21,7 +21,8 @@
             <a href="{% url 'home' %}">Início</a> ||
 
             {% if user.is_authenticated %}
-            Olá, <a href="{% url 'profile' %}" title="Ver/editar perfil de {{ user.username}}">{{ user.username }}</a>! |
+            Olá, <a href="{% url 'profile' %}" title="Ver/editar perfil de {{ user.username}}">{{ user.username }}</a>!
+            |
             <form method="POST" action="{% url 'logout' %}" style="display: inline;">
                 {% csrf_token %}
                 <button type="submit">Sair</button>
@@ -32,6 +33,15 @@
         </nav>
 
         <main>
+
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
             {% block content %}{% endblock %}
         </main>
 

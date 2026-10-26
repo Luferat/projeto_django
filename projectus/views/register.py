@@ -2,7 +2,7 @@
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
-
+from django.contrib import messages
 from projectus.forms import RegisterForm
 
 
@@ -12,6 +12,7 @@ def register(request):
 
         if form.is_valid():
             form.save()
+            messages.success('Usuário cadastrado com sucesso!')
             return redirect('login')
 
     else:

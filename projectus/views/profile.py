@@ -2,7 +2,7 @@
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-
+from django.contrib import messages
 from projectus.forms import ProfileForm
 
 
@@ -16,6 +16,7 @@ def profile(request):
 
         if form.is_valid():
             form.save()
+            messages.success(request, 'Perfil salvo com sucesso!')
             return redirect('profile')
 
     else:

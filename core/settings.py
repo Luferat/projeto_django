@@ -10,20 +10,24 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i!9=^m(ynwoi70hr#!&fi(a&2x9w06_pc^(%a@i^w(n4o@#*ab'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = []
 
@@ -79,11 +83,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'projectus',
-        'USER': 'root',
-        'PASSWORD': 'toor',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
@@ -146,8 +150,8 @@ MAILERS = {
         'OPTIONS': {
             'host': 'smtp.gmail.com',
             'port': 587,
-            'username': 'andre@luferat.net',
-            'password': 'vyso uvnf sxbh jzvl',
+            'username': os.getenv('EMAIL_HOST_USER'),
+            'password': os.getenv('EMAIL_HOST_PASSWORD'),
             'use_tls': True,
             'use_ssl': False,
             'timeout': 20,

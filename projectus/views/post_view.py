@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from projectus.models import Post
 from django.conf import settings
@@ -36,7 +37,7 @@ def post_view(request, id):
             comment.post = post
             comment.user = request.user
             comment.save()
-
+            messages.success("Comentário enviado com sucesso!")
             return redirect('post_view', id=post.id)
     else:
         form = CommentForm()
@@ -56,6 +57,6 @@ def post_view(request, id):
             'posts': posts,  # Posts do autor
             'author_name': author_name,  # Nome do autor do post, ajustado
             'form': form,  # Campos do formulário de comentários
-            'comments': comments, # Comentários existentes
+            'comments': comments,  # Comentários existentes
         }
     )
