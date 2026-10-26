@@ -1,11 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm
 from django.shortcuts import render, redirect
-from django import forms
-
-
-class PasswordResetForm(forms.Form):
-    username = forms.CharField(label='Nome de usuário')
+from projectus.forms import PasswordResetForm
 
 
 def password_reset(request):
