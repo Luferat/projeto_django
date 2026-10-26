@@ -4,24 +4,95 @@
 
 <section>
 
-<h2>Posts Recentes</h2>
+    <div class="index-head">
+        <h2>{% if q %}Resultado da busca{% elif ordem == 'antigos' %}Posts mais antigos{% else %}Posts recentes{% endif %}</h2>
+        <p>{{ total }} post{{ total|pluralize }} encontrado{{ total|pluralize }}</p>
+    </div>
 
-<p>{{ total }} posts.</p>
+    <form class="search" method="GET" action="{% url 'home' %}" role="search">
+        <div>
+            <label for="q">Buscar</label>
+            <input type="search" id="q" name="q" value="{{ q }}" placeholder="Digite o título ou o nome do autor">
+        </div>
 
-{% for post in posts %}
+        <div>
+            <label for="campo">Procurar em</label>
+            <select id="campo" name="campo">
+                {% for valor, rotulo in campos_busca.items %}
+                <option value="{{ valor }}" {% if valor == campo %}selected{% endif %}>{{ rotulo }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-<div>
-    <img src="{{ post.thumbnail }}" alt="{{ post.title }}" width="150">
-    <h4><a href="{% url 'post_view' id=post.id  %}">{{ post.title }}</a></h4>
-    <p>{{ post.summary }}</p>
-</div>
-<hr>
+        <div>
+            <label for="ordem">Ordenar por</label>
+            <select id="ordem" name="ordem">
+                <option value="recentes" {% if ordem == 'recentes' %}selected{% endif %}>Mais recentes</option>
+                <option value="antigos" {% if ordem == 'antigos' %}selected{% endif %}>Mais antigos</option>
+            </select>
+        </div>
 
-{% empty %}
+        <div class="search__actions">
+            <button type="submit">Buscar</button>
+            {% if q or campo != 'todos' or ordem != 'recentes' %}
+            <a class="btn btn--ghost" href="{% url 'home' %}">Limpar</a>
+            {% endif %}
+        </div>
+    </form>
 
-<p>Não achei nada.</p>
+    {% if posts %}
+    <ul class="post-list">
+        {% for post in posts %}
+        <li class="post-item">
+            <a href="{% url 'post_view' id=post.id %}" tabindex="-1" aria-hidden="true">
+                <img class="post-item__thumb" src="{{ post.thumbnail }}" alt="" loading="lazy">
+            </a>
 
-{% endfor %}
+            <div>
+                <h3 class="post-item__title">
+                    <a href="{% url 'post_view' id=post.id %}">{{ post.title }}</a>
+                </h3>
+
+                <div class="post-item__meta">
+                    <span>Por {{ post.author_name }}</span>
+                    <span>{{ post.created_at|date:"d/m/Y" }}</span>
+                    <span>{% include 'projectus/_stars.html' %}</span>
+                </div>
+
+                <p class="post-item__summary">{{ post.summary }}</p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% if page_obj.has_other_pages %}
+    <nav class="pagination" aria-label="Páginas">
+        {% if page_obj.has_previous %}
+        <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Anterior</a>
+        {% else %}
+        <span class="is-disabled">Anterior</span>
+        {% endif %}
+
+        <span class="is-current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+        <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Próxima</a>
+        {% else %}
+        <span class="is-disabled">Próxima</span>
+        {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="empty">
+        {% if q %}
+        <p>Nenhum post encontrado para “{{ q }}”. Tente outra palavra ou mude o campo de busca.</p>
+        <a class="btn btn--ghost" href="{% url 'home' %}">Ver todos os posts</a>
+        {% else %}
+        <p>Ainda não há posts publicados.</p>
+        {% endif %}
+    </div>
+    {% endif %}
 
 </section>
 

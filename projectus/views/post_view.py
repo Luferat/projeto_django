@@ -6,22 +6,18 @@ from ..forms import CommentForm
 
 def post_view(request, id):
 
-    # Obtém o post solicitado pelo ID
-    post = get_object_or_404(Post, id=id)
+    # Obtém o post solicitado pelo ID, já com a média e o total de votos
+    post = get_object_or_404(
+        Post.objects.visible().with_ratings().select_related('user'),
+        id=id
+    )
 
-    # Trata nome do autor
-    if post.user.first_name and post.user.last_name:
-        author_name = f'{post.user.first_name} {post.user.last_name}'
-    elif post.user.first_name:
-        author_name = post.user.first_name
-    else:
-        author_name = post.user.username
+    # Nome do autor, ajustado (nome completo, nome ou usuário)
+    author_name = post.author_name
 
     # Obtém os posts do mesmo autor aleatóriamente
-    posts = Post.objects.filter(
-        user=post.user,
-        is_active=True,
-        is_deleted=False
+    posts = Post.objects.visible().with_ratings().filter(
+        user=post.user
     ).exclude(
         # Excluindo o post atual
         id=post.id
@@ -29,6 +25,11 @@ def post_view(request, id):
 
     # Processa o comentário enviado
     if request.method == 'POST':
+
+        # Somente usuários logados podem comentar
+        if not request.user.is_authenticated:
+            return redirect(f'{settings.LOGIN_URL}?next={request.path}')
+
         form = CommentForm(request.POST)
 
         if form.is_valid():
@@ -47,6 +48,13 @@ def post_view(request, id):
         is_deleted=False
     ).order_by('-created_at')
 
+    # Nota que o usuário logado já deu a este post (None se não votou)
+    user_score = None
+    if request.user.is_authenticated:
+        user_score = post.ratings.filter(
+            user=request.user
+        ).values_list('score', flat=True).first()
+
     return render(
         request,
         'projectus/post_view.html',
@@ -56,6 +64,8 @@ def post_view(request, id):
             'posts': posts,  # Posts do autor
             'author_name': author_name,  # Nome do autor do post, ajustado
             'form': form,  # Campos do formulário de comentários
-            'comments': comments, # Comentários existentes
+            'comments': comments,  # Comentários existentes
+            'user_score': user_score,  # Voto do usuário logado
+            'star_values': [5, 4, 3, 2, 1],  # Ordem usada pelo CSS das estrelas
         }
     )

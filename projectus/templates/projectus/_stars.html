@@ -1,0 +1,13 @@
+{% comment %}
+Estrelas somente leitura.
+Uso: {% include 'projectus/_stars.html' with post=post %}
+Espera `post.avg_rating` e `post.votes_count` (veja Post.objects.with_ratings()).
+{% endcomment %}
+{% if post.votes_count %}
+<span class="stars" style="--fill: {% widthratio post.avg_rating 5 100 %}%" role="img"
+    aria-label="Nota média {{ post.avg_rating|floatformat:1 }} de 5, com {{ post.votes_count }} voto{{ post.votes_count|pluralize }}"></span>
+<span class="stars-text"><strong>{{ post.avg_rating|floatformat:1 }}</strong> ({{ post.votes_count }} voto{{ post.votes_count|pluralize }})</span>
+{% else %}
+<span class="stars" role="img" aria-label="Ainda sem votos"></span>
+<span class="stars-text">Sem votos</span>
+{% endif %}

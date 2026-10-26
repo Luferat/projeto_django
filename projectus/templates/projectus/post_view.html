@@ -2,73 +2,86 @@
 
 {% block content %}
 
-<article>
+<article class="post">
 
-    <h2>{{ post.title }}</h2>
+    <h2 class="post__title">{{ post.title }}</h2>
 
-    <small>Por {{ author_name }} em {{ post.created_at |date:"d/m/Y"}}.</small>
+    <small class="post__meta">Por {{ author_name }} em {{ post.created_at|date:"d/m/Y" }}.</small>
 
-    <p><img src="{{ post.thumbnail }}" alt="{{ post.title }}"></p>
+    <img class="post__cover" src="{{ post.thumbnail }}" alt="{{ post.title }}">
 
-    <div style="padding: 16px 0">
-        {{ post.textbody }}
+    <div class="post__body">{{ post.textbody }}</div>
+
+    <div class="rating-box">
+        <div class="rating-box__summary">
+            {% include 'projectus/_stars.html' %}
+        </div>
+
+        {% if user.is_authenticated %}
+        <form class="rating-box__vote" method="POST" action="{% url 'rate_post' id=post.id %}">
+            {% csrf_token %}
+            <span>{% if user_score %}Sua nota: {{ user_score }}. Clique para mudar:{% else %}Dê sua nota:{% endif %}</span>
+            <div class="rate">
+                {% for value in star_values %}
+                <button type="submit" name="score" value="{{ value }}"
+                    class="{% if user_score and value <= user_score %}is-on{% endif %}"
+                    aria-label="Dar {{ value }} estrela{{ value|pluralize }}"
+                    title="{{ value }} estrela{{ value|pluralize }}">★</button>
+                {% endfor %}
+            </div>
+        </form>
+        {% else %}
+        <p class="rating-box__vote"><a href="{% url 'login' %}?next={{ request.path }}">Entre</a> para dar sua nota.</p>
+        {% endif %}
     </div>
 
-    <hr>
-    <hr>
+    <section class="post-form">
+        {% if user.is_authenticated %}
+        <h3>Comente</h3>
 
-    {% if user.is_authenticated %}
-    <h3>Comente</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_div }}
+            <p><button type="submit">Postar comentário</button></p>
+        </form>
+        {% else %}
+        <p><a href="{% url 'login' %}?next={{ request.path }}">Entre</a> para comentar.</p>
+        {% endif %}
+    </section>
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_div }}
-        <button type="submit">Postar</button>
-    </form>
-    &nbsp;
-    {% else %}
-    <p><a href="/accounts/login/">Logue-se para comentar</a></p>
-    {% endif %}
+    <section class="comments">
+        <h3>Comentários</h3>
 
-    <hr>
-    <hr>
-
-    <h3>Comentários</h3>
-
-    {% for comment in comments %}
-    <p>
-        <strong>{{ comment.user.username }}</strong>
-        <small>{{ comment.created_at|date:"d \d\e F \d\e Y \à\s H:i" }}</small>
-    </p>
-    <p>{{ comment.comment }}</p>
-
-    <hr>
-    {% empty %}
-    <p>Nenhum comentário ainda.</p>
-    {% endfor %}
-
-    <hr>
-
+        {% for comment in comments %}
+        <div class="comment">
+            <div class="comment__head">
+                <strong>{{ comment.user.username }}</strong>
+                <small>{{ comment.created_at|date:"d \d\e F \d\e Y \à\s H:i" }}</small>
+            </div>
+            <p>{{ comment.comment }}</p>
+        </div>
+        {% empty %}
+        <p>Nenhum comentário ainda. Seja a primeira pessoa a comentar.</p>
+        {% endfor %}
+    </section>
 
 </article>
 
 <aside>
     <h3>Outros artigos de {{ author_name }}</h3>
 
-    {% for post in posts %}
-
-    <div>
-        <img src="{{ post.thumbnail }}" alt="{{ post.title }}" width="150">
-        <h4><a href="{% url 'post_view' id=post.id  %}">{{ post.title }}</a></h4>
-        <p>{{ post.summary }}</p>
+    <div class="related">
+        {% for post in posts %}
+        <div class="related__item">
+            <img src="{{ post.thumbnail }}" alt="" loading="lazy">
+            <h4><a href="{% url 'post_view' id=post.id %}">{{ post.title }}</a></h4>
+            <div>{% include 'projectus/_stars.html' %}</div>
+            <p>{{ post.summary }}</p>
+        </div>
+        {% empty %}
+        <p>Este autor ainda não tem outros artigos.</p>
+        {% endfor %}
     </div>
-    <hr>
-
-    {% empty %}
-
-    <p>Não achei nada.</p>
-
-    {% endfor %}
 </aside>
 
 {% endblock %}
