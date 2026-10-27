@@ -12,7 +12,7 @@ def register(request):
 
         if form.is_valid():
             form.save()
-            messages.success('Usuário cadastrado com sucesso!')
+            messages.success(request, 'Usuário cadastrado com sucesso!')
             return redirect('login')
 
     else:

@@ -22,7 +22,7 @@ def password_reset(request):
                     'Usuário não encontrado.'
                 )
             else:
-                messages.success("E-mail enviado com sucesso!")
+                messages.success(request, "E-mail enviado com sucesso!")
                 return redirect(
                     'password_reset_confirm',
                     username=user.username
@@ -49,7 +49,7 @@ def password_reset_confirm(request, username):
 
         if form.is_valid():
             form.save()
-            messages.success("Senha atualizada!")
+            messages.success(request, "Senha atualizada!")
             return redirect('login')
     else:
         form = SetPasswordForm(user)

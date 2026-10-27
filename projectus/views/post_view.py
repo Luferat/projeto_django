@@ -37,7 +37,7 @@ def post_view(request, id):
             comment.post = post
             comment.user = request.user
             comment.save()
-            messages.success("Comentário enviado com sucesso!")
+            messages.success(request, "Comentário enviado com sucesso!")
             return redirect('post_view', id=post.id)
     else:
         form = CommentForm()
